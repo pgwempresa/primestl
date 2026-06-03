@@ -27,6 +27,37 @@ const testimonials = [
   "https://primestl.vercel.app/assets/dep-05-CFypTejN.webp",
 ];
 
+const scrollCarouselToIndex = (carousel: HTMLDivElement, index: number) => {
+  const items = Array.from(carousel.children).filter(
+    (child): child is HTMLElement => child instanceof HTMLElement && child.tagName !== 'STYLE'
+  );
+  const item = items[index];
+
+  if (!item) return;
+
+  carousel.scrollTo({
+    left: item.offsetLeft + item.clientWidth / 2 - carousel.clientWidth / 2,
+    behavior: 'smooth'
+  });
+};
+
+const getCenteredCarouselIndex = (carousel: HTMLDivElement) => {
+  const carouselCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+  const items = Array.from(carousel.children).filter(
+    (child): child is HTMLElement => child instanceof HTMLElement && child.tagName !== 'STYLE'
+  );
+
+  return items.reduce(
+    (closest, item, index) => {
+      const itemCenter = item.offsetLeft + item.clientWidth / 2;
+      const distance = Math.abs(carouselCenter - itemCenter);
+
+      return distance < closest.distance ? { index, distance } : closest;
+    },
+    { index: 0, distance: Number.POSITIVE_INFINITY }
+  ).index;
+};
+
 export default function App() {
   const [activePlatformImage, setActivePlatformImage] = useState(0);
   const platformImages = [
@@ -50,8 +81,6 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (carouselRef.current) {
-        const itemWidth = carouselRef.current.children[0].clientWidth;
-        const gap = window.innerWidth >= 768 ? 24 : 16;
         const maxIndex = categories.length - 1;
         
         let nextIndex = activeCategory + 1;
@@ -59,10 +88,7 @@ export default function App() {
           nextIndex = 0;
         }
 
-        carouselRef.current.scrollTo({
-          left: nextIndex * (itemWidth + gap),
-          behavior: 'smooth'
-        });
+        scrollCarouselToIndex(carouselRef.current, nextIndex);
       }
     }, 4000);
 
@@ -72,8 +98,6 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (secondCarouselRef.current) {
-        const itemWidth = secondCarouselRef.current.children[0].clientWidth;
-        const gap = window.innerWidth >= 768 ? 24 : 16;
         const maxIndex = secondCategories.length - 1;
         
         let nextIndex = activeSecondCategory + 1;
@@ -81,10 +105,7 @@ export default function App() {
           nextIndex = 0;
         }
 
-        secondCarouselRef.current.scrollTo({
-          left: nextIndex * (itemWidth + gap),
-          behavior: 'smooth'
-        });
+        scrollCarouselToIndex(secondCarouselRef.current, nextIndex);
       }
     }, 4000);
 
@@ -93,11 +114,7 @@ export default function App() {
 
   const handleScroll = () => {
     if (carouselRef.current) {
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const itemWidth = carouselRef.current.children[0].clientWidth;
-      const gap = window.innerWidth >= 768 ? 24 : 16;
-      
-      const newIndex = Math.round(scrollLeft / (itemWidth + gap));
+      const newIndex = getCenteredCarouselIndex(carouselRef.current);
       if (newIndex !== activeCategory && newIndex >= 0 && newIndex < categories.length) {
         setActiveCategory(newIndex);
       }
@@ -106,11 +123,7 @@ export default function App() {
 
   const handleSecondScroll = () => {
     if (secondCarouselRef.current) {
-      const scrollLeft = secondCarouselRef.current.scrollLeft;
-      const itemWidth = secondCarouselRef.current.children[0].clientWidth;
-      const gap = window.innerWidth >= 768 ? 24 : 16;
-      
-      const newIndex = Math.round(scrollLeft / (itemWidth + gap));
+      const newIndex = getCenteredCarouselIndex(secondCarouselRef.current);
       if (newIndex !== activeSecondCategory && newIndex >= 0 && newIndex < secondCategories.length) {
         setActiveSecondCategory(newIndex);
       }
@@ -134,8 +147,6 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (testimonialCarouselRef.current) {
-        const itemWidth = testimonialCarouselRef.current.children[0].clientWidth;
-        const gap = window.innerWidth >= 768 ? 24 : 16;
         const maxIndex = testimonials.length - 1;
         
         let nextIndex = activeTestimonial + 1;
@@ -143,10 +154,7 @@ export default function App() {
           nextIndex = 0;
         }
 
-        testimonialCarouselRef.current.scrollTo({
-          left: nextIndex * (itemWidth + gap),
-          behavior: 'smooth'
-        });
+        scrollCarouselToIndex(testimonialCarouselRef.current, nextIndex);
       }
     }, 4500);
 
@@ -155,11 +163,7 @@ export default function App() {
 
   const handleTestimonialScroll = () => {
     if (testimonialCarouselRef.current) {
-      const scrollLeft = testimonialCarouselRef.current.scrollLeft;
-      const itemWidth = testimonialCarouselRef.current.children[0].clientWidth;
-      const gap = window.innerWidth >= 768 ? 24 : 16;
-      
-      const newIndex = Math.round(scrollLeft / (itemWidth + gap));
+      const newIndex = getCenteredCarouselIndex(testimonialCarouselRef.current);
       if (newIndex !== activeTestimonial && newIndex >= 0 && newIndex < testimonials.length) {
         setActiveTestimonial(newIndex);
       }
@@ -258,22 +262,13 @@ export default function App() {
 
           <div 
             ref={carouselRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full"
+            className="hide-scrollbar flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full px-[max(1rem,7.5vw)] md:px-[max(1rem,calc(50vw-200px))]"
             onScroll={handleScroll}
             style={{ 
               scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              paddingLeft: 'max(1rem, calc(50vw - 160px))', 
-              paddingRight: 'max(1rem, calc(50vw - 160px))' 
+              msOverflowStyle: 'none'
             }}
           >
-            {/* Inject CSS to hide scrollbar for webkit */}
-            <style dangerouslySetInnerHTML={{__html: `
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `}} />
-            
             {categories.map((cat, idx) => (
               <div key={idx} className="min-w-[280px] md:min-w-[400px] w-[85vw] md:w-[400px] aspect-[4/5] flex-shrink-0 snap-center rounded-[2.5rem] overflow-hidden relative group cursor-pointer border border-zinc-800/80 hover:border-[#C8FF00]/50 transition-colors duration-500">
                 <img src={cat.img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -551,22 +546,13 @@ export default function App() {
 
           <div 
             ref={secondCarouselRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full"
+            className="hide-scrollbar flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full px-[max(1rem,7.5vw)] md:px-[max(1rem,calc(50vw-200px))]"
             onScroll={handleSecondScroll}
             style={{ 
               scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              paddingLeft: 'max(1rem, calc(50vw - 160px))', 
-              paddingRight: 'max(1rem, calc(50vw - 160px))' 
+              msOverflowStyle: 'none'
             }}
           >
-            {/* Inject CSS to hide scrollbar for webkit */}
-            <style dangerouslySetInnerHTML={{__html: `
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `}} />
-            
             {secondCategories.map((cat, idx) => (
               <div key={idx} className="min-w-[280px] md:min-w-[400px] w-[85vw] md:w-[400px] aspect-[4/5] flex-shrink-0 snap-center rounded-[2.5rem] overflow-hidden relative group cursor-pointer border border-zinc-800/80 hover:border-[#C8FF00]/50 transition-colors duration-500">
                 <img src={cat.img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -797,13 +783,11 @@ export default function App() {
 
           <div 
             ref={testimonialCarouselRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full"
+            className="hide-scrollbar flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory pb-8 w-full px-[max(1rem,12.5vw)] md:px-[max(1rem,calc(50vw-160px))]"
             onScroll={handleTestimonialScroll}
             style={{ 
               scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              paddingLeft: 'max(1rem, calc(50vw - 160px))', 
-              paddingRight: 'max(1rem, calc(50vw - 160px))' 
+              msOverflowStyle: 'none'
             }}
           >
             {testimonials.map((imgSrc, idx) => (
@@ -871,7 +855,7 @@ export default function App() {
                 <div className="text-5xl font-black font-['Montserrat'] italic text-white mb-6">
                   R$19,90
                 </div>
-                <a href="#" className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition-colors duration-3000 font-bold text-sm px-6 py-4 rounded-full flex items-center justify-center gap-2">
+                <a href="https://pay.wiapy.com/jN6XSncytm" target="_blank" rel="noopener noreferrer" className="w-full bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition-colors duration-3000 font-bold text-sm px-6 py-4 rounded-full flex items-center justify-center gap-2">
                   ESCOLHER O BÁSICO <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
@@ -942,7 +926,7 @@ export default function App() {
                 <div className="text-6xl sm:text-7xl font-black font-['Montserrat'] italic text-[#C8FF00] mb-8 drop-shadow-[0_0_20px_rgba(200,255,0,0.4)]">
                   R$47,90
                 </div>
-                <a href="#" className="w-full bg-[#C8FF00] hover:bg-[#b3e600] text-black transition-all duration-300 font-black text-sm px-6 py-6 rounded-3xl flex items-center justify-between shadow-[0_0_30px_rgba(200,255,0,0.3)] hover:shadow-[0_0_40px_rgba(200,255,0,0.5)] hover:-translate-y-1 mb-8 group">
+                <a href="https://pay.wiapy.com/9smInoNIc" target="_blank" rel="noopener noreferrer" className="w-full bg-[#C8FF00] hover:bg-[#b3e600] text-black transition-all duration-300 font-black text-sm px-6 py-6 rounded-3xl flex items-center justify-between shadow-[0_0_30px_rgba(200,255,0,0.3)] hover:shadow-[0_0_40px_rgba(200,255,0,0.5)] hover:-translate-y-1 mb-8 group">
                   <div className="text-left leading-tight">
                     <span className="block text-lg italic uppercase">QUERO ESSA<br/>SUPER<br/>OFERTA!</span>
                     <span className="block text-[9px] sm:text-[10px] mt-2 opacity-80 uppercase tracking-wider font-bold">ACESSO IMEDIATO E<br/>VITALÍCIO</span>
