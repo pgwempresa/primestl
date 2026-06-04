@@ -207,26 +207,16 @@ export default function App() {
           </h3>
 
           {/* VIDEO PLAYER PLACEHOLDER */}
-          <div className="w-full max-w-[400px] sm:max-w-xl md:max-w-2xl aspect-[9/16] sm:aspect-[4/5] md:aspect-video bg-zinc-900 rounded-3xl border border-zinc-800 relative overflow-hidden mb-10 group cursor-pointer shadow-2xl shadow-black/50">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1a3a41] to-[#254b52] opacity-80 mix-blend-overlay"></div>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <div className="text-[#C8FF00] font-black font-['Montserrat'] text-4xl sm:text-6xl tracking-tight opacity-30 mt-auto mb-10">PARE</div>
-            </div>
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-black/20 group-hover:bg-black/10 transition-colors">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-[#C8FF00] rounded-full flex items-center justify-center mb-4 pl-1 shadow-[0_0_30px_rgba(200,255,0,0.4)] group-hover:scale-110 transition-transform">
-                <Play className="w-8 h-8 md:w-10 md:h-10 text-black fill-black" />
-              </div>
-              <div className="font-['Montserrat'] font-black italic text-lg sm:text-xl text-white tracking-widest drop-shadow-md">
-                CLIQUE PARA <span className="text-[#C8FF00]">ASSISTIR O VÍDEO</span>
-              </div>
-              <div className="mt-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 text-white/80 uppercase tracking-widest">
-                SOM LIGADO <Volume2 className="w-4 h-4" />
-              </div>
-            </div>
+          <div className="w-full max-w-[400px] sm:max-w-xl md:max-w-2xl aspect-[9/16] sm:aspect-[4/5] md:aspect-video bg-zinc-900 rounded-3xl border border-zinc-800 relative overflow-hidden mb-10 group shadow-2xl shadow-black/50">
+            <video 
+              src="/promo-video.mp4" 
+              controls 
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* CTA BUTTON */}
-          <a href="#checkout" className="w-full sm:max-w-[90%] md:max-w-[80%] bg-[#C8FF00] hover:bg-[#b0e600] text-black py-5 sm:py-6 rounded-2xl font-black font-['Inter'] text-sm sm:text-lg md:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(200,255,0,0.2)] hover:shadow-[0_0_60px_rgba(200,255,0,0.4)] flex justify-center items-center text-center px-4">
+          <a href="#pricing" className="w-full sm:max-w-[90%] md:max-w-[80%] bg-[#C8FF00] hover:bg-[#b0e600] text-black py-5 sm:py-6 rounded-2xl font-black font-['Inter'] text-sm sm:text-lg md:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(200,255,0,0.2)] hover:shadow-[0_0_60px_rgba(200,255,0,0.4)] flex justify-center items-center text-center px-4">
             QUERO ACESSAR A BIBLIOTECA AGORA
           </a>
 
@@ -659,7 +649,7 @@ export default function App() {
                 <span className="text-zinc-500">"TORNE SUA IMPRESSÃO 3D UM</span> <span className="text-white relative inline-block">NEGÓCIO PROFISSIONAL.<div className="absolute -bottom-1 sm:-bottom-1.5 left-0 w-full h-[3px] bg-[#C8FF00]/50 rounded-full"></div></span><span className="text-zinc-500">"</span>
               </h3>
 
-              <a href="#checkout" className="w-full sm:max-w-md bg-[#C8FF00] hover:bg-[#b0e600] text-black py-4 sm:py-5 rounded-xl font-bold font-['Inter'] text-sm sm:text-base md:text-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(200,255,0,0.2)] hover:shadow-[0_0_60px_rgba(200,255,0,0.4)] flex justify-center items-center gap-2 sm:gap-3 text-center px-4">
+              <a href="#pricing" className="w-full sm:max-w-md bg-[#C8FF00] hover:bg-[#b0e600] text-black py-4 sm:py-5 rounded-xl font-bold font-['Inter'] text-sm sm:text-base md:text-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(200,255,0,0.2)] hover:shadow-[0_0_60px_rgba(200,255,0,0.4)] flex justify-center items-center gap-2 sm:gap-3 text-center px-4">
                 🔥 QUERO ACESSO COMPLETO <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </div>
