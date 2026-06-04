@@ -59,6 +59,29 @@ const getCenteredCarouselIndex = (carousel: HTMLDivElement) => {
 };
 
 export default function App() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+
+  const toggleVideo = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+        setIsVideoPlaying(false);
+      } else {
+        videoRef.current.play();
+        setIsVideoPlaying(true);
+      }
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setVideoProgress(progress || 0);
+    }
+  };
+
   const [activePlatformImage, setActivePlatformImage] = useState(0);
   const platformImages = [
     "https://primestl.vercel.app/assets/platform-01-Bn1MkiES.png",
@@ -207,12 +230,44 @@ export default function App() {
           </h3>
 
           {/* VIDEO PLAYER PLACEHOLDER */}
-          <div className="w-full max-w-[400px] sm:max-w-xl md:max-w-2xl aspect-[9/16] sm:aspect-[4/5] md:aspect-video bg-zinc-900 rounded-3xl border border-zinc-800 relative overflow-hidden mb-10 group shadow-2xl shadow-black/50">
-            <video 
-              src="/promo-video.mp4" 
-              controls 
-              className="w-full h-full object-cover"
-            />
+          <div className="w-full mb-10 md:mb-16">
+            <div className="relative w-full max-w-[360px] sm:max-w-[400px] mx-auto group">
+              <div className="relative rounded-[2rem] overflow-hidden border-4 border-white/5 shadow-[0_0_50px_rgba(200,255,0,0.15)] bg-black flex items-center justify-center aspect-[9/16]">
+                <video 
+                  ref={videoRef}
+                  className="w-full h-full object-cover block cursor-pointer"
+                  playsInline
+                  preload="auto"
+                  onClick={toggleVideo}
+                  onTimeUpdate={handleTimeUpdate}
+                  src="/promo-video.mp4"
+                />
+                
+                {/* Overlay */}
+                {!isVideoPlaying && (
+                  <div 
+                    className="absolute inset-0 z-20 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer group-hover:bg-black/30 transition-all"
+                    onClick={toggleVideo}
+                  >
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[#C8FF00] rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(200,255,0,0.5)] mb-6 transform transition-transform group-hover:scale-110">
+                      <Play className="w-8 h-8 sm:w-10 sm:h-10 text-black fill-black ml-1 sm:ml-2" />
+                    </div>
+                    <h3 className="text-white font-['Montserrat'] font-black text-xl sm:text-2xl md:text-3xl uppercase italic tracking-tighter text-center px-6 drop-shadow-lg">
+                      CLIQUE PARA <span className="text-[#C8FF00]">ASSISTIR O VÍDEO</span>
+                    </h3>
+                    <p className="text-zinc-200 font-bold text-xs sm:text-sm mt-2 uppercase tracking-widest drop-shadow-md">
+                      Som ligado 🔊
+                    </p>
+                  </div>
+                )}
+
+                {/* Neon Bar */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 sm:h-1.5 bg-white/10 z-10">
+                  <div className="h-full bg-[#C8FF00] shadow-[0_0_10px_#C8FF00]" style={{ width: `${videoProgress}%` }}></div>
+                </div>
+              </div>
+              <div className="absolute -inset-4 bg-[#C8FF00]/5 blur-3xl -z-10 rounded-full opacity-50"></div>
+            </div>
           </div>
 
           {/* CTA BUTTON */}
